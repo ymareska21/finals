@@ -1193,6 +1193,124 @@
             margin-bottom: 10px;
         }
 
+        /* ===== NEW DELIVERY OPTIONS STYLES ===== */
+        .delivery-options {
+            margin-bottom: 24px;
+            padding: 20px;
+            background: #F8FAFC;
+            border-radius: 16px;
+            border: 2px solid #E2E8F0;
+        }
+
+        .delivery-options h4 {
+            margin-bottom: 16px;
+            color: var(--primary-purple);
+            font-weight: 700;
+        }
+
+        .delivery-toggle {
+            display: flex;
+            background: #E2E8F0;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .delivery-toggle-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            color: #64748B;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delivery-toggle-btn.active {
+            background: white;
+            color: var(--primary-purple);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .delivery-toggle-btn i {
+            margin-right: 8px;
+        }
+
+        .delivery-form {
+            display: none;
+        }
+
+        .delivery-form.active {
+            display: block;
+        }
+
+        .pickup-info {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #E2E8F0;
+        }
+
+        .pickup-info.active {
+            display: block;
+        }
+
+        .pickup-info h5 {
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pickup-info p {
+            color: #64748B;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+
+        .pickup-time {
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin-top: 12px;
+            font-size: 0.9rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background-color: #FAFBFC;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        /* ===== END NEW DELIVERY OPTIONS STYLES ===== */
+
         /* Munch Section */
         .munch-section {
             padding: 0 40px 40px;
@@ -1493,6 +1611,10 @@
             .auth-content {
                 padding: 32px 24px;
                 margin: 20px;
+            }
+
+            .form-row {
+                flex-direction: column;
             }
         }
     </style>
@@ -2080,6 +2202,61 @@
                 <!-- Cart items will be populated here -->
             </div>
             
+            <!-- ===== NEW DELIVERY OPTIONS SECTION ===== -->
+            <div id="deliveryOptions" class="delivery-options" style="display: none;">
+                <h4>Choose Delivery Method</h4>
+                
+                <div class="delivery-toggle">
+                    <button type="button" class="delivery-toggle-btn active" onclick="selectDeliveryOption('pickup')">
+                        <i class="fas fa-store"></i> Pickup
+                    </button>
+                    <button type="button" class="delivery-toggle-btn" onclick="selectDeliveryOption('delivery')">
+                        <i class="fas fa-truck"></i> Delivery
+                    </button>
+                </div>
+                
+                <div id="pickupInfo" class="pickup-info active">
+                    <h5><i class="fas fa-map-marker-alt"></i> Pickup Location</h5>
+                    <p>123 Coffee Street, Downtown District</p>
+                    <p>City, State 12345</p>
+                    <p class="pickup-time">Ready for pickup in 15-20 minutes</p>
+                </div>
+                
+                <div id="deliveryForm" class="delivery-form">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="deliveryName" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="deliveryPhone" placeholder="Enter your phone number" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Street Address</label>
+                        <input type="text" id="deliveryStreet" placeholder="Enter your street address" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>City</label>
+                            <input type="text" id="deliveryCity" placeholder="City" required>
+                        </div>
+                        <div class="form-group">
+                            <label>State</label>
+                            <input type="text" id="deliveryState" placeholder="State" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ZIP</label>
+                            <input type="text" id="deliveryZip" placeholder="ZIP" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Special Instructions (Optional)</label>
+                        <textarea id="deliveryInstructions" rows="2" placeholder="Any special delivery instructions..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <!-- ===== END NEW DELIVERY OPTIONS SECTION ===== -->
+            
             <div id="cartTotal" class="cart-total">
                 <!-- Total will be shown here -->
             </div>
@@ -2115,6 +2292,9 @@
         let currentSection = 'home';
         let isLoggedIn = false;
         let currentUser = null;
+        // ===== NEW DELIVERY VARIABLES =====
+        let deliveryMethod = 'pickup';
+        // ===== END NEW DELIVERY VARIABLES =====
 
         // Navigation
         function showSection(sectionName) {
@@ -2220,6 +2400,7 @@
                     </div>
                 `;
                 cartTotalContainer.innerHTML = '';
+                document.getElementById('deliveryOptions').style.display = 'none';
                 return;
             }
             
@@ -2243,7 +2424,7 @@
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             cartTotalContainer.innerHTML = `
                 <div class="total-amount">Total: $${total.toFixed(2)}</div>
-                <button class="checkout-btn" onclick="checkout()">
+                <button class="checkout-btn" onclick="startCheckout()">
                     <i class="fas fa-credit-card"></i> Checkout
                 </button>
             `;
@@ -2258,24 +2439,108 @@
         function closeCart() {
             document.getElementById('cartModal').classList.remove('active');
             document.body.style.overflow = 'auto';
+            // Reset delivery options
+            document.getElementById('deliveryOptions').style.display = 'none';
+            deliveryMethod = 'pickup';
+            selectDeliveryOption('pickup');
         }
 
-        function checkout() {
+        // ===== NEW DELIVERY FUNCTIONS =====
+        function startCheckout() {
             if (cart.length === 0) return;
             
+            // Show delivery options
+            document.getElementById('deliveryOptions').style.display = 'block';
+            
+            // Update checkout button
+            const cartTotalContainer = document.getElementById('cartTotal');
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            cartTotalContainer.innerHTML = `
+                <div class="total-amount">Total: $${total.toFixed(2)}</div>
+                <button class="checkout-btn" onclick="completeCheckout()">
+                    <i class="fas fa-check"></i> Complete Order
+                </button>
+            `;
+        }
+
+        function selectDeliveryOption(method) {
+            deliveryMethod = method;
+            
+            // Update toggle buttons
+            document.querySelectorAll('.delivery-toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (method === 'pickup') {
+                document.querySelector('.delivery-toggle-btn:first-child').classList.add('active');
+                document.getElementById('pickupInfo').classList.add('active');
+                document.getElementById('deliveryForm').classList.remove('active');
+            } else {
+                document.querySelector('.delivery-toggle-btn:last-child').classList.add('active');
+                document.getElementById('pickupInfo').classList.remove('active');
+                document.getElementById('deliveryForm').classList.add('active');
+            }
+        }
+
+        function completeCheckout() {
+            // Validate delivery form if delivery is selected
+            if (deliveryMethod === 'delivery') {
+                const name = document.getElementById('deliveryName').value;
+                const phone = document.getElementById('deliveryPhone').value;
+                const street = document.getElementById('deliveryStreet').value;
+                const city = document.getElementById('deliveryCity').value;
+                const state = document.getElementById('deliveryState').value;
+                const zip = document.getElementById('deliveryZip').value;
+                
+                if (!name || !phone || !street || !city || !state || !zip) {
+                    alert('Please fill in all required delivery information.');
+                    return;
+                }
+            }
+            
+            // Process the order
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const orderNumber = Math.floor(Math.random() * 1000000);
             
             // Show success message
-            document.getElementById('cartItems').innerHTML = `
-                <div class="checkout-success">
-                    <i class="fas fa-check-circle"></i>
-                    <h4>Order Successful!</h4>
-                    <p>Order #${orderNumber}</p>
-                    <p>Total: $${total.toFixed(2)}</p>
-                    <p>Thank you for your order! We'll have your coffee ready soon.</p>
-                </div>
-            `;
+            let successMessage = '';
+            
+            if (deliveryMethod === 'pickup') {
+                successMessage = `
+                    <div class="checkout-success">
+                        <i class="fas fa-check-circle"></i>
+                        <h4>Order Successful!</h4>
+                        <p>Order #${orderNumber}</p>
+                        <p>Total: $${total.toFixed(2)}</p>
+                        <p><strong>Pickup at:</strong> 123 Coffee Street, Downtown District</p>
+                        <p>Your order will be ready in 15-20 minutes.</p>
+                        <p>Thank you for your order!</p>
+                    </div>
+                `;
+            } else {
+                const name = document.getElementById('deliveryName').value;
+                const street = document.getElementById('deliveryStreet').value;
+                const city = document.getElementById('deliveryCity').value;
+                const state = document.getElementById('deliveryState').value;
+                const zip = document.getElementById('deliveryZip').value;
+                
+                successMessage = `
+                    <div class="checkout-success">
+                        <i class="fas fa-check-circle"></i>
+                        <h4>Order Successful!</h4>
+                        <p>Order #${orderNumber}</p>
+                        <p>Total: $${total.toFixed(2)}</p>
+                        <p><strong>Delivery to:</strong> ${name}</p>
+                        <p>${street}, ${city}, ${state} ${zip}</p>
+                        <p>Estimated delivery time: 30-45 minutes</p>
+                        <p>Thank you for your order!</p>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('cartItems').innerHTML = successMessage;
+            document.getElementById('deliveryOptions').style.display = 'none';
             
             document.getElementById('cartTotal').innerHTML = `
                 <button class="checkout-btn" onclick="closeCart(); clearCart();">Continue Shopping</button>
@@ -2286,8 +2551,14 @@
                 items: cart,
                 total: total,
                 orderNumber: orderNumber,
+                deliveryMethod: deliveryMethod,
                 timestamp: new Date()
             });
+        }
+        // ===== END NEW DELIVERY FUNCTIONS =====
+
+        function checkout() {
+            startCheckout();
         }
 
         function clearCart() {
